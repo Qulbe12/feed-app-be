@@ -89,3 +89,4 @@ app.post('/add-vehicle', (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }));
+//# sourceMappingURL=index.js.map
