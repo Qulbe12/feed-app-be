@@ -5,15 +5,18 @@ import Account from "./Models/user.model";
 import { seedAdminUser } from "./helpers/admin.seeder";
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import VehicleModel from "./Models/vehicle.model";
+import cors from "cors"
 
 dotenv.config();
 
 const app: Express = express();
+app.use(cors())
 const port = process.env.PORT || 3000;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb+srv://SaadKhawajaProject:wBBO8JR4UXvqowOb@sk1.f4p6k.mongodb.net/VehicleAdd')
+mongoose.connect(process.env.MONGO_URL || "")
     .then(() => {
         console.log('Connected to MongoDB');
 
@@ -38,16 +41,17 @@ app.get("/", (req: Request, res: Response) => {
     res.send("Express + TypeScript Server");
 });
 
-app.post('/signin', async (req: Request, res: Response) => {
+app.post('/sign-in', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
+
 
         if (!email || !password) {
             return res.status(401).json({ error: 'Please provide a valid email and password' });
         }
 
         const user = await Account.findOne({ email });
-    console.log(user)
+
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -62,6 +66,30 @@ app.post('/signin', async (req: Request, res: Response) => {
 
     } catch (error) {
         console.error('Error signing in:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+app.post('/add-vehicle', async (req: Request, res: Response) => {
+    try {
+        const { model, price , phoneNumber , maxPictures , pictures , userId } = req.body;
+
+        if (!model || !price || !phoneNumber || !maxPictures || !pictures || !userId ) {
+            return res.status(401).json({ error: 'Please provide a valid details of vehicle' });
+        }
+
+        const user = await Account.findById(userId).select("-password");
+
+        if (!user){
+            return res.status(401).json({ error: 'not authorized to add vehicle' });
+        }
+
+        const vehicle = await VehicleModel.create({
+            model, price , phoneNumber , maxPictures , pictures , ownerId :userId
+        })
+        return res.json(vehicle);
+
+    } catch (error) {
+        console.error('Error :', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
