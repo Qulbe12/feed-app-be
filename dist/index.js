@@ -14,11 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const user_model_1 = __importDefault(require("./Models/user.model"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const vehicle_model_1 = __importDefault(require("./Models/vehicle.model"));
+const feed_model_1 = __importDefault(require("./Models/feed.model"));
 const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -46,41 +44,27 @@ mongoose_1.default.connect(process.env.MONGO_URL || "")
 app.get("/", (req, res) => {
     res.send("Express + TypeScript Server");
 });
-app.post('/sign-in', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('/add-feed', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            return res.status(401).json({ error: 'Please provide a valid email and password' });
+        const { name, comment } = req.body;
+        if (!name || !comment) {
+            return res.status(401).json({ error: 'Please provide a valid data' });
         }
-        const user = yield user_model_1.default.findOne({ email });
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-        const passwordMatch = yield bcrypt_1.default.compare(password, user.password);
-        if (!passwordMatch) {
-            return res.status(401).json({ error: 'Incorrect password' });
-        }
-        return res.json({ message: 'Sign-in successful', user });
+        const vehicle = yield feed_model_1.default.create({
+            name,
+            comment
+        });
+        return res.json(vehicle);
     }
     catch (error) {
-        console.error('Error signing in:', error);
+        console.error('Error :', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }));
-app.post('/add-vehicle', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/get-all-feeds', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { model, price, phoneNumber, maxPictures, pictures, userId } = req.body;
-        if (!model || !price || !phoneNumber || !maxPictures || !pictures || !userId) {
-            return res.status(401).json({ error: 'Please provide a valid details of vehicle' });
-        }
-        const user = yield user_model_1.default.findById(userId).select("-password");
-        if (!user) {
-            return res.status(401).json({ error: 'not authorized to add vehicle' });
-        }
-        const vehicle = yield vehicle_model_1.default.create({
-            model, price, phoneNumber, maxPictures, pictures, ownerId: userId
-        });
-        return res.json(vehicle);
+        const feeds = yield feed_model_1.default.find().exec();
+        return res.json(feeds);
     }
     catch (error) {
         console.error('Error :', error);
