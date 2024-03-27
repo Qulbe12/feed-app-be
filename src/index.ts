@@ -30,7 +30,6 @@ mongoose.connect(process.env.MONGO_URL || "")
 
         app.listen(port, async () => {
             console.log(`[server]: Server is running at http://localhost:${port}`);
-           await seedAdminUser();
         });
     })
     .catch((error: Error) => {

@@ -16,7 +16,6 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_model_1 = __importDefault(require("./Models/user.model"));
-const admin_seeder_1 = require("./helpers/admin.seeder");
 const body_parser_1 = __importDefault(require("body-parser"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const vehicle_model_1 = __importDefault(require("./Models/vehicle.model"));
@@ -39,7 +38,6 @@ mongoose_1.default.connect(process.env.MONGO_URL || "")
     });
     app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(`[server]: Server is running at http://localhost:${port}`);
-        yield (0, admin_seeder_1.seedAdminUser)();
     }));
 })
     .catch((error) => {
