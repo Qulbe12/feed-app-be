@@ -46,11 +46,11 @@ app.post('/add-feed', async (req: Request, res: Response) => {
             return res.status(401).json({error: 'Please provide a valid data'});
         }
 
-        const vehicle = await FeedModel.create({
+        const feed = await FeedModel.create({
             name,
             comment
         })
-        return res.json(vehicle);
+        return res.json(feed);
 
     } catch (error) {
         console.error('Error :', error);

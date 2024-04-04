@@ -7,5 +7,5 @@ const FeedSchema: Schema = new Schema({
 });
 
 // Create and export Car model
-const FeedModel = mongoose.model<IFeedDto>('Car', FeedSchema);
+const FeedModel = mongoose.model<IFeedDto>('Feed', FeedSchema);
 export default FeedModel;
