@@ -49,7 +49,6 @@ app.post('/add-feed', async (req: Request, res: Response) => {
             comment
         })
         return res.json(feed);
-
     } catch (error) {
         console.error('Error :', error);
         return res.status(500).json({error: 'Internal Server Error'});
@@ -59,7 +58,6 @@ app.get('/get-all-feeds', async (req: Request, res: Response) => {
     try {
         const feeds = await FeedModel.find().exec()
         return res.json(feeds);
-
     } catch (error) {
         console.error('Error :', error);
         return res.status(500).json({error: 'Internal Server Error'});
