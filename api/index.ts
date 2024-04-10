@@ -41,11 +41,9 @@ app.get("/", (req: Request, res: Response) => {
 app.post('/add-feed', async (req: Request, res: Response) => {
     try {
         const {name, comment} = req.body;
-
         if (!name || !comment) {
             return res.status(401).json({error: 'Please provide a valid data'});
         }
-
         const feed = await FeedModel.create({
             name,
             comment
